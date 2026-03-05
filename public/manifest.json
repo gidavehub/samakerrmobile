@@ -1,0 +1,21 @@
+{
+  "name": "Sama Kerr Mobile",
+  "short_name": "Sama Kerr",
+  "description": "Sama Kerr Mobile PWA for property management and onboarding.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0A58CA",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

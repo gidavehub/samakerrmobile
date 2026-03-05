@@ -1,0 +1,233 @@
+.main {
+    min-height: 100vh;
+    background-color: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px;
+    /* Space for bottom nav */
+}
+
+.header {
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.headerProfile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.greeting {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.propertyName {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.iconBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    flex: 1;
+    padding: 24px;
+}
+
+.balanceCard {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-hover) 100%);
+    border-radius: 20px;
+    padding: 24px;
+    color: white;
+    box-shadow: 0 10px 20px rgba(10, 88, 202, 0.2);
+    margin-bottom: 32px;
+}
+
+.balanceLabel {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.balanceAmount {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.balanceActions {
+    display: flex;
+    gap: 12px;
+}
+
+.payBtn {
+    background: white;
+    color: var(--accent-blue);
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.historyBtn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.sectionTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.actionCard {
+    background: var(--bg-primary);
+    padding: 20px 16px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.iconCircle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.blueBg {
+    background: rgba(10, 88, 202, 0.1);
+}
+
+.orangeBg {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.greenBg {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.grayBg {
+    background: rgba(107, 114, 128, 0.1);
+}
+
+.actionCard span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.activityList {
+    background: var(--bg-primary);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.activityItem {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+}
+
+.activityIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.activityDetails {
+    flex: 1;
+}
+
+.activityName {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.activityDate {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.bottomNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bg-primary);
+    display: flex;
+    justify-content: space-around;
+    padding: 16px 8px env(safe-area-inset-bottom, 16px);
+    border-top: 1px solid var(--border-color);
+}
+
+.navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.activeNav {
+    color: var(--accent-blue);
+}
