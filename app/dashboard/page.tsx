@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Home, Zap, Wrench, TrendingUp, LogOut, Bell, FileText } from 'lucide-react';
 import gsap from 'gsap';
 import styles from './page.module.css';
 
-export default function ClientDashboard() {
+function ClientDashboardContent() {
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
     const router = useRouter();
@@ -111,5 +111,13 @@ export default function ClientDashboard() {
                 </button>
             </nav>
         </main>
+    );
+}
+
+export default function ClientDashboard() {
+    return (
+        <Suspense fallback={<div>Loading dashboard...</div>}>
+            <ClientDashboardContent />
+        </Suspense>
     );
 }
