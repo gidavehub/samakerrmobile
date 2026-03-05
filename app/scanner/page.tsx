@@ -10,12 +10,23 @@ import styles from './page.module.css';
 export default function ScannerPage() {
     const [scanResult, setScanResult] = useState<string | null>(null);
     const [error, setError] = useState<string>('');
+    const [scanError, setScanError] = useState<string>('');
     const [hasPermission, setHasPermission] = useState<boolean>(false);
     const [isTorchOn, setIsTorchOn] = useState(false);
     const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
     const router = useRouter();
 
     useEffect(() => {
+        // Global error listeners for mobile debugging
+        const handleError = (e: ErrorEvent) => {
+            setScanError(e.message || 'Unknown Scanner Error');
+        };
+        const handleRejection = (e: PromiseRejectionEvent) => {
+            setScanError(e.reason?.message || String(e.reason));
+        };
+        window.addEventListener('error', handleError);
+        window.addEventListener('unhandledrejection', handleRejection);
+
         // Fade in animation
         gsap.fromTo('.animate-in',
             { opacity: 0 },
@@ -27,6 +38,8 @@ export default function ScannerPage() {
 
         // Cleanup scanner on unmount
         return () => {
+            window.removeEventListener('error', handleError);
+            window.removeEventListener('unhandledrejection', handleRejection);
             if (html5QrCodeRef.current) {
                 html5QrCodeRef.current.stop().catch(e => console.error(e));
                 html5QrCodeRef.current.clear();
@@ -35,6 +48,7 @@ export default function ScannerPage() {
     }, []);
 
     const startScanner = async () => {
+        setScanError('');
         try {
             const html5QrCode = new Html5Qrcode("reader");
             html5QrCodeRef.current = html5QrCode;
@@ -47,20 +61,28 @@ export default function ScannerPage() {
                     aspectRatio: window.innerHeight / window.innerWidth,
                 },
                 (decodedText) => {
-                    html5QrCode.stop();
-                    setScanResult(decodedText);
-                    handleValidScan(decodedText);
+                    if (html5QrCodeRef.current) {
+                        html5QrCodeRef.current.stop().then(() => {
+                            setScanResult(decodedText);
+                            handleValidScan(decodedText);
+                        }).catch((err: any) => {
+                            console.error("Stop error", err);
+                            // Even if stop fails, attempt navigation
+                            setScanResult(decodedText);
+                            handleValidScan(decodedText);
+                        });
+                    }
                 },
                 (err) => {
                     // ignore constant decode failures
                 }
             );
             setHasPermission(true);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error starting scanner", err);
             // Permission denied or no camera
             setHasPermission(false);
-            setError("Camera permission denied. Please allow camera access in your browser settings to scan the QR code.");
+            setError(err.message || "Camera permission denied or camera not found.");
         }
     };
 
@@ -140,9 +162,19 @@ export default function ScannerPage() {
                         </div>
                     )}
 
-                    {scanResult && (
+                    {scanResult && !scanError && (
                         <div className={styles.successMessage}>
                             <p>QR Code detected. Connecting to property...</p>
+                        </div>
+                    )}
+
+                    {scanError && (
+                        <div className={styles.scrollableErrorOverlay}>
+                            <div className={styles.scrollableErrorBox}>
+                                <h3>Application Error</h3>
+                                <p>{scanError}</p>
+                                <button onClick={() => setScanError('')} className={styles.retryBtn}>Dismiss</button>
+                            </div>
                         </div>
                     )}
                 </div>
