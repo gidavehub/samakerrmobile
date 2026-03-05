@@ -1,0 +1,22 @@
+/* html5-qrcode library overrides — MUST use global CSS with !important */
+.scanner-reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: block !important;
+}
+
+.scanner-reader>div {
+    display: none !important;
+}
+
+.scanner-reader canvas {
+    display: none !important;
+}
+
+.scanner-reader img {
+    display: none !important;
+}

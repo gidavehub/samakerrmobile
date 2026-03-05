@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Light Theme — Sama Kerr Mobile */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f5f7;
+  --text-primary: #121212;
+  --text-secondary: #4a4a4a;
+  --accent-blue: #0A58CA;
+  --accent-hover: #084298;
+  --border-color: rgba(0, 0, 0, 0.08);
+}
+
 @layer base {
   body {
     background-color: theme('colors.primary-bg');
