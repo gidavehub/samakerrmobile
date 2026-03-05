@@ -1,103 +1,26 @@
-:root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f4f5f7;
-  --text-primary: #121212;
-  --text-secondary: #4a4a4a;
-  --accent-blue: #0A58CA;
-  --accent-hover: #084298;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --header-height: 80px;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-outfit), var(--font-inter), sans-serif;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-/* Common Components */
-.btn-primary {
-  background-color: var(--accent-blue);
-  color: #fff;
-  padding: 10px 24px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 15px;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-primary:hover {
-  background-color: var(--accent-hover);
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  padding: 10px 24px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 15px;
-  transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-  background-color: var(--border-color);
-}
-
-.section-title {
-  font-size: 3rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.1;
-}
-
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2rem;
+@layer base {
+  body {
+    background-color: theme('colors.primary-bg');
+    color: theme('colors.primary-text');
+    font-family: theme('fontFamily.inter');
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
-}
 
-.fade-in-up {
-  opacity: 0;
-  transform: translateY(30px);
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: theme('fontFamily.outfit');
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
 }

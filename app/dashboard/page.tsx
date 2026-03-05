@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Home, Zap, Wrench, TrendingUp, LogOut, Bell, FileText } from 'lucide-react';
+import { Home, Zap, Wrench, TrendingUp, LogOut, Bell, FileText, Bot, X, Send } from 'lucide-react';
 import gsap from 'gsap';
 import styles from './page.module.css';
 
@@ -10,6 +10,7 @@ function ClientDashboardContent() {
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
     const router = useRouter();
+    const [isAiOpen, setIsAiOpen] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -22,6 +23,15 @@ function ClientDashboardContent() {
             { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
         );
     }, [token, router]);
+
+    useEffect(() => {
+        if (isAiOpen) {
+            gsap.fromTo('.ai-glass-panel',
+                { y: '100%', opacity: 0 },
+                { y: '0%', opacity: 1, duration: 0.5, ease: 'power3.out' }
+            );
+        }
+    }, [isAiOpen]);
 
     if (!token) return null;
 
@@ -110,6 +120,51 @@ function ClientDashboardContent() {
                     <span>Disconnect</span>
                 </button>
             </nav>
+
+            {/* AI Floating Action Button */}
+            {!isAiOpen && (
+                <button className={`${styles.aiFab} animate-item`} onClick={() => setIsAiOpen(true)}>
+                    <Bot size={28} color="white" />
+                </button>
+            )}
+
+            {/* AI Bot Overlay - Liquid Glass */}
+            {isAiOpen && (
+                <div className={styles.aiOverlay}>
+                    <div className={styles.aiOverlayBackdrop} onClick={() => setIsAiOpen(false)}></div>
+                    <div className={`${styles.aiGlassPanel} ai-glass-panel`}>
+                        <div className={styles.aiHeader}>
+                            <div className={styles.aiHeaderInfo}>
+                                <div className={styles.aiAvatar}>
+                                    <Bot size={22} color="white" />
+                                </div>
+                                <div>
+                                    <h3>Sama AI</h3>
+                                    <p>Nexus Assistant</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setIsAiOpen(false)} className={styles.aiClose}>
+                                <X size={24} color="#1b1b1b" />
+                            </button>
+                        </div>
+
+                        <div className={styles.aiMessages}>
+                            <div className={styles.aiMsgSystem}>Sama AI connected to Property {token.substring(0, 5).toUpperCase()}</div>
+                            <div className={styles.aiMsgBot}>
+                                Hello John. I noticed your utility balance is slightly higher than last month.
+                                Would you like me to process a payment via your saved method, or analyze your usage?
+                            </div>
+                        </div>
+
+                        <div className={styles.aiInputArea}>
+                            <input type="text" placeholder="Ask Sama AI..." className={styles.aiInput} />
+                            <button className={styles.aiSend}>
+                                <Send size={18} color="white" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }
