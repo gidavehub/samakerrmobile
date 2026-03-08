@@ -40,7 +40,13 @@ export default function ScannerPage() {
                 html5QrCodeRef.current = null;
             }
 
-            const html5QrCode = new Html5Qrcode("reader", { verbose: false });
+            // @ts-ignore
+            const { Html5QrcodeSupportedFormats } = await import('html5-qrcode');
+
+            const html5QrCode = new Html5Qrcode("reader", {
+                verbose: false,
+                formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
+            });
             html5QrCodeRef.current = html5QrCode;
 
             await html5QrCode.start(
@@ -48,9 +54,10 @@ export default function ScannerPage() {
                 {
                     fps: 10,
                     qrbox: { width: 250, height: 250 },
-                    aspectRatio: window.innerHeight / window.innerWidth,
+                    aspectRatio: 1.0, // Fixed aspect ratio for more reliable detection across devices
                 },
                 (decodedText) => {
+                    // Success Callback
                     if (!html5QrCodeRef.current) return;
                     try {
                         const state = html5QrCodeRef.current.getState();
@@ -65,7 +72,9 @@ export default function ScannerPage() {
                         handleValidScan(decodedText);
                     }
                 },
-                () => { }
+                (_) => {
+                    // Failure Callback - intentionally empty. The scanner calls this many times a second while searching for a QR code.
+                }
             );
             setHasPermission(true);
             setIsStarting(false);
@@ -179,8 +188,8 @@ export default function ScannerPage() {
                         <button
                             onClick={toggleTorch}
                             className={`w-[60px] h-[60px] rounded-full backdrop-blur-xl flex items-center justify-center border transition-all active:scale-[0.92] ${isTorchOn
-                                    ? 'bg-white text-black border-white'
-                                    : 'bg-white/20 text-white border-white/30'
+                                ? 'bg-white text-black border-white'
+                                : 'bg-white/20 text-white border-white/30'
                                 }`}
                         >
                             <Flashlight size={24} />
