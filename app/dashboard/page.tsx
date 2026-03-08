@@ -6,11 +6,27 @@ import {
     Home, Zap, Wrench, Bell, Search, Menu, Bot,
     ChevronRight, Flame, CreditCard,
     Building2, Droplets, Receipt, MapPin,
-    X, AlertCircle, CheckCircle2, Clock, ArrowUpRight
+    X, AlertCircle, CheckCircle2, Clock, ArrowUpRight,
+    MessageCircleQuestion, ScanLine, FileEdit, RefreshCw, Sparkles, Mic, Layers, User, Headphones
 } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { database } from '@/lib/firebase';
 import { ref, get } from 'firebase/database';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+
+// Animation variants
+const staggerContainer: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: { staggerChildren: 0.1 }
+    }
+};
+
+const slideUpItem: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
 
 interface PropertyData {
     name?: string;
@@ -170,361 +186,170 @@ function ClientDashboardContent() {
             : { label: 'Planning', color: 'bg-white/15 text-white/70' };
 
     return (
-        <main className="min-h-screen bg-[#f0f0f5] flex flex-col font-inter">
-
-            {/* ── Header ── */}
-            <div
-                className="pt-[env(safe-area-inset-top,20px)] px-5 pb-8 relative overflow-hidden"
-                style={{ background: `linear-gradient(135deg, #0f2744 0%, ${brandColor} 100%)` }}
+        <main className="min-h-[100dvh] bg-white flex flex-col font-inter relative overflow-hidden pb-24">
+            {/* Header Area — Sama Kerr Logo */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="px-6 pt-[env(safe-area-inset-top,44px)] pb-3 flex items-center justify-center z-10"
             >
-                {/* subtle grid pattern */}
-                <div className="absolute inset-0 opacity-[0.04]"
-                    style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+                <img src="/logo-blue.png" alt="Sama Kerr" className="h-[64px] object-contain" />
+            </motion.div>
 
-                <div className="h-3" />
+            {/* Greeting */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="px-8 mt-6 mb-[44px] z-10"
+            >
+                <h1 className="text-[44px] font-bold text-[#1b1b1b] leading-[1.05] tracking-[-0.04em]">
+                    Hi {loading ? '...' : firstName},<br />
+                    How can I help<br />
+                    you today?
+                </h1>
+            </motion.div>
 
-                {/* Top Row */}
-                <div className="flex items-center justify-between mb-6 relative z-10">
-                    <div className="flex items-center gap-3">
-                        {company?.companyLogo ? (
-                            <div className="w-11 h-11 rounded-full bg-white overflow-hidden border-2 border-white/20 shadow-sm">
-                                <img src={company.companyLogo} alt={company.companyName} className="w-full h-full object-contain" />
-                            </div>
-                        ) : (
-                            <div className="w-11 h-11 rounded-full bg-white/15 flex items-center justify-center border border-white/10 shadow-sm">
-                                <Building2 size={20} className="text-white" />
-                            </div>
-                        )}
-                        <div>
-                            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase">
-                                {new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 18 ? 'Good afternoon' : 'Good evening'}
-                            </p>
-                            <h1 className="text-white text-[22px] font-black tracking-tight leading-none mt-0.5">
-                                {loading ? '...' : firstName}
-                            </h1>
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => { setActiveSheet('notifications'); setActiveNav('notifications'); }}
-                        className="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/10 active:bg-white/20 transition-colors"
-                    >
-                        <Bell size={18} className="text-white" />
-                        <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-400 rounded-full border-2 border-[#0f2744]" />
+            {/* 4 Grid Squircle Buttons */}
+            <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="show"
+                className="px-6 grid grid-cols-2 gap-4 mb-8 z-10"
+            >
+                {/* 1. My Property / Light Blue */}
+                <motion.button variants={slideUpItem} onClick={() => router.push('/property')} className="bg-[#E4F4F9] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 active:scale-[0.98] transition-transform">
+                    <Building2 size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">My Property</span>
+                </motion.button>
+
+                {/* 2. Payments / White + Border */}
+                <motion.button variants={slideUpItem} onClick={() => router.push('/payments')} className="bg-white border border-[#E5E5E5] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 shadow-sm active:scale-[0.98] transition-transform">
+                    <CreditCard size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">Payments</span>
+                </motion.button>
+
+                {/* 3. Maintenance / Light Green */}
+                <motion.button variants={slideUpItem} onClick={() => router.push('/maintenance')} className="bg-[#E6F5DF] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 active:scale-[0.98] transition-transform">
+                    <Wrench size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">Maintenance</span>
+                </motion.button>
+
+                {/* 4. Support / Light Yellow */}
+                <motion.button variants={slideUpItem} onClick={() => router.push('/support')} className="bg-[#FFF6D4] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 active:scale-[0.98] transition-transform">
+                    <Headphones size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">Support</span>
+                </motion.button>
+            </motion.div>
+
+            {/* Search Bar */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="px-6 flex-1 z-10"
+            >
+                <div className="bg-white border border-[#E5E5E5] rounded-[100px] flex items-center px-5 py-[18px] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+                    <Search size={20} strokeWidth={2.5} className="text-[#a19f9d] shrink-0" />
+                    <input
+                        type="text"
+                        placeholder="Ask or search for anything"
+                        className="flex-1 bg-transparent border-none outline-none px-3 text-[16px] font-medium text-[#1b1b1b] placeholder-[#b1afad]"
+                    />
+                    <button className="w-8 h-8 rounded-full flex items-center justify-center shrink-0">
+                        <Mic size={20} strokeWidth={2} className="text-[#1b1b1b]" />
                     </button>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* Scrollable Content */}
-            <div className="flex-1 px-5 pb-36 space-y-5 relative z-10 -mt-2">
-
-                {/* Property Info Floating Card */}
-                <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white">
-                    <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-[18px] bg-[#0081fb]/10 flex items-center justify-center shrink-0">
-                                <Building2 size={22} className="text-[#0081fb]" />
-                            </div>
-                            <div>
-                                <h2 className="text-[#1b1b1b] text-[18px] font-extrabold leading-tight tracking-tight">{loading ? '...' : propertyLabel}</h2>
-                                <p className="text-[#8a8886] text-[13px] mt-0.5 font-medium">{property?.address || 'Loading...'}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 mt-4 pt-4 border-t border-black/5">
-                        <span className={`text-[11px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${statusBadge.color}`}>
-                            {statusBadge.label}
-                        </span>
-                        <span className="w-1 h-1 rounded-full bg-[#c8c6c4]" />
-                        <span className="text-[#605e5c] text-[13px] font-bold">{modelLabels[paymentModel]}</span>
-                    </div>
+            {/* Split Bottom Nav */}
+            <motion.div
+                initial={{ y: 120, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 25, delay: 0.4 }}
+                className="fixed bottom-10 left-0 right-0 px-6 flex items-center justify-between z-40 pointer-events-none"
+            >
+                {/* Left Pill Group */}
+                <div className="bg-[#111111] text-white rounded-[100px] flex items-center p-1.5 gap-1.5 shadow-2xl pointer-events-auto">
+                    {/* Active Link */}
+                    <button className="bg-white text-black w-14 h-14 rounded-full flex items-center justify-center shrink-0 shadow-sm active:scale-95 transition-transform">
+                        <Layers size={24} strokeWidth={2} fill="currentColor" />
+                    </button>
+                    {/* Inactive Link */}
+                    <button className="w-14 h-14 rounded-full flex items-center justify-center text-white/50 hover:text-white active:scale-95 transition-all shrink-0">
+                        <User size={24} strokeWidth={2.5} />
+                    </button>
                 </div>
 
-                {/* Next Payment Hero Card */}
-                <div className="bg-white rounded-[32px] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.06)] border border-white relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#0081fb]/5 rounded-bl-[100px] pointer-events-none" />
+                {/* Right Circle (Blob / Action) */}
+                <button
+                    onClick={() => setIsAiOpen(true)}
+                    className="w-[68px] h-[68px] bg-[#111111] text-white rounded-full flex items-center justify-center shadow-2xl pointer-events-auto overflow-hidden relative active:scale-[0.96] transition-transform"
+                >
+                    {/* Reintroduced the DotLottie React Blob as requested behind the floating plus/AI area */}
+                    <div className="absolute inset-0 scale-[2.2] flex items-center justify-center opacity-80 pointer-events-none mix-blend-screen">
+                        <DotLottieReact src="/blob.lottie" loop autoplay />
+                    </div>
+                </button>
+            </motion.div>
 
-                    <div className="flex items-center justify-between mb-2">
-                        <p className="text-[12px] font-black text-[#a19f9d] uppercase tracking-widest">Next Payment</p>
-                        <span className="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-[11px] font-black flex items-center gap-1">
-                            <ArrowUpRight size={12} strokeWidth={3} /> On Track
-                        </span>
-                    </div>
-                    <h2 className="text-[44px] font-black tracking-tight leading-none text-[#1b1b1b] mt-2 mb-1">
-                        {billing ? formattedRent : '—'}
-                    </h2>
-                    <p className="text-[14px] font-semibold text-[#8a8886]">{billing ? nextDueLabel : 'No billing configured yet'}</p>
+            {/* ═══════ Full-Screen AI Orb Overlay ═══════ */}
+            <AnimatePresence>
+                {isAiOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center font-inter"
+                    >
+                        {/* Close Button */}
+                        <motion.button
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                            onClick={() => setIsAiOpen(false)}
+                            className="absolute top-[env(safe-area-inset-top,44px)] left-5 w-12 h-12 rounded-full bg-[#efefef] flex items-center justify-center active:bg-[#e4e4e4] transition-colors z-10"
+                        >
+                            <X size={22} strokeWidth={2} className="text-[#1b1b1b]" />
+                        </motion.button>
 
-                    {billing && (
-                        <div className="mt-6">
-                            <button
-                                className="w-full py-4 rounded-[20px] text-[15px] font-black text-white transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
-                                style={{ backgroundColor: '#0081fb' }}
-                            >
-                                <CreditCard size={18} /> Pay Now
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                {/* Bill Island Cards */}
-                <div>
-                    <div className="flex items-center justify-between mb-4 px-2">
-                        <h3 className="text-[19px] font-extrabold text-[#1b1b1b] tracking-tight">Your Bills</h3>
-                        <button className="text-[13px] font-black text-[#0081fb] flex items-center gap-0.5 uppercase tracking-wide">
-                            Manage
-                        </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        {bills.map((bill) => {
-                            const BillIcon = bill.icon;
-                            return (
-                                <button key={bill.id}
-                                    className={`bg-white rounded-[28px] p-5 text-left relative overflow-hidden active:scale-[0.96] transition-transform shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-white flex flex-col justify-between aspect-square`}>
-                                    <div className="flex items-center justify-between">
-                                        <div className={`w-11 h-11 rounded-[16px] ${bill.bg} flex items-center justify-center relative`}>
-                                            <BillIcon size={22} className={bill.iconColor} />
-                                            {bill.nawec && (
-                                                <img src="/nawec.jpg" alt="NAWEC" className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2 border-white object-cover shadow-sm" />
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="mt-auto pt-4 relative z-10">
-                                        {bill.isAction ? (
-                                            <p className="text-[17px] font-black text-[#0081fb] leading-tight tracking-tight mb-1 flex items-center gap-1">{bill.amount} <ChevronRight size={16} strokeWidth={3} className="mt-0.5" /></p>
-                                        ) : (
-                                            <p className="text-[22px] font-black text-[#1b1b1b] leading-tight tracking-tight mb-1">{bill.amount}</p>
-                                        )}
-                                        <p className="text-[14px] font-bold text-[#8a8886] mb-0.5 leading-tight">{bill.label}</p>
-                                        <p className="text-[11px] text-[#a19f9d] font-semibold tracking-wide uppercase leading-tight">{bill.dueLabel}</p>
-                                    </div>
-                                    <div className={`absolute -bottom-10 -right-10 w-24 h-24 rounded-full ${bill.bg} blur-2xl opacity-50`} />
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* Quick Actions Card */}
-                <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white">
-                    <div className="px-4 py-3 mb-1">
-                        <h3 className="text-[16px] font-extrabold text-[#1b1b1b]">Quick Actions</h3>
-                    </div>
-                    <div className="space-y-1.5">
-                        {[
-                            { icon: CreditCard, label: 'Pay Rent / Instalment', sub: billing ? `D ${rentAmount.toLocaleString()} · ${scheduleLabel}` : 'No billing set', color: 'text-[#0081fb]', bg: 'bg-[#0081fb]/10' },
-                            { icon: Wrench, label: 'Request Maintenance', sub: 'Log a repair or issue', color: 'text-orange-500', bg: 'bg-orange-50' },
-                            { icon: Receipt, label: 'View Receipts', sub: 'Your payment history', color: 'text-violet-500', bg: 'bg-violet-50', action: () => setActiveNav('receipts') },
-                        ].map((action) => {
-                            const ActionIcon = action.icon;
-                            return (
-                                <button key={action.label}
-                                    onClick={action.action}
-                                    className="w-full flex items-center gap-4 bg-white/60 rounded-[24px] px-4 py-4 active:bg-white transition-colors text-left border border-white shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-                                    <div className={`w-12 h-12 rounded-[16px] ${action.bg} flex items-center justify-center shrink-0`}>
-                                        <ActionIcon size={20} className={action.color} />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-[15px] font-bold text-[#1b1b1b]">{action.label}</p>
-                                        <p className="text-[12px] font-medium text-[#8a8886] truncate">{action.sub}</p>
-                                    </div>
-                                    <ChevronRight size={18} className="text-[#a19f9d] shrink-0" />
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* Property Details Footer Card */}
-                <div className="bg-white rounded-[32px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white mt-8 mb-4">
-                    <div className="px-4 py-3 border-b border-[#f3f2f1] flex items-center justify-between">
-                        <h4 className="text-[11px] font-bold text-[#a19f9d] uppercase tracking-widest">Property Details</h4>
-                    </div>
-                    <div className="p-4 space-y-3">
-                        {[
-                            { label: 'Property', value: property?.name || '—' },
-                            { label: 'Address', value: property?.address || '—' },
-                            { label: 'Managed by', value: company?.companyName || '—' },
-                            { label: 'Payment Type', value: modelLabels[paymentModel] },
-                            { label: 'Tenant Name', value: property?.tenantName || '—' },
-                        ].map(({ label, value }) => (
-                            <div key={label} className="flex justify-between items-center">
-                                <span className="text-[13px] text-[#605e5c]">{label}</span>
-                                <span className="text-[13px] font-semibold text-[#1b1b1b] text-right max-w-[60%] truncate">{value}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="px-4 pb-4">
-                        <button onClick={handleDisconnect}
-                            className="w-full py-3.5 rounded-[20px] bg-rose-50 text-[14px] font-black tracking-wide text-rose-500 hover:bg-rose-100 transition-colors">
-                            Disconnect Property
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* ── Condensed 3-Button Nav (Home, AI, Receipts) ── */}
-            {!isAiOpen && !activeSheet && (
-                <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-fit">
-                    <div className="bg-[#0081fb] rounded-full flex items-center justify-center py-4 px-6 gap-6 shadow-[0_12px_32px_rgba(0,129,251,0.35)] border border-white/20">
-                        <button onClick={() => setActiveNav('home')} className={`p-2 transition-colors ${activeNav === 'home' ? 'text-white' : 'text-white/60 hover:text-white'}`}>
-                            <Home size={26} strokeWidth={activeNav === 'home' ? 3 : 2} />
-                        </button>
-                        {/* Center AI Blob */}
-                        <button onClick={() => setIsAiOpen(true)} className="relative -mt-10 -mb-6 mx-2 flex items-center justify-center">
-                            <div className="w-[88px] h-[88px] flex items-center justify-center">
-                                <DotLottieReact src="/blob.lottie" loop autoplay style={{ width: 88, height: 88 }} />
-                            </div>
-                        </button>
-                        <button onClick={() => setActiveNav('receipts')} className={`p-2 transition-colors ${activeNav === 'receipts' ? 'text-white' : 'text-white/60 hover:text-white'}`}>
-                            <Receipt size={26} strokeWidth={activeNav === 'receipts' ? 3 : 2} />
-                        </button>
-                    </div>
-                </nav>
-            )}
-
-            {/* ── Notifications Sheet ── */}
-            {activeSheet === 'notifications' && (
-                <div className="fixed inset-0 z-50 flex flex-col justify-end">
-                    <div className="absolute inset-0 bg-black/30" onClick={() => { setActiveSheet(null); setActiveNav('home'); }} />
-                    <div className="relative w-full bg-[#f0f0f5] rounded-t-[32px] overflow-hidden shadow-[0_-10px_40px_rgba(0,0,0,0.1)] max-h-[75vh] flex flex-col">
-                        <div className="w-10 h-[5px] bg-black/10 rounded-full mx-auto mt-3 mb-1 shrink-0" />
-                        <div className="flex items-center justify-between px-5 py-3 shrink-0">
-                            <h3 className="text-[18px] font-bold text-[#1b1b1b]">Notifications</h3>
-                            <button onClick={() => { setActiveSheet(null); setActiveNav('home'); }} className="w-8 h-8 rounded-full bg-black/[0.06] flex items-center justify-center">
-                                <X size={16} className="text-[#605e5c]" />
-                            </button>
-                        </div>
-                        <div className="flex-1 overflow-y-auto px-5 pb-8">
-                            <div className="space-y-2.5">
-                                {(() => {
-                                    const notifs = billing ? [
-                                        { icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50', title: 'Billing configured', sub: `${modelLabels[paymentModel]} · ${scheduleLabel}` },
-                                        { icon: Clock, color: 'text-blue-500', bg: 'bg-blue-50', title: `Next payment: ${formattedRent}`, sub: nextDueLabel },
-                                    ] : [
-                                        { icon: AlertCircle, color: 'text-amber-500', bg: 'bg-amber-50', title: 'Billing not configured', sub: 'Contact your property manager' },
-                                    ];
-                                    return notifs.map((notif, i) => {
-                                        const NotifIcon = notif.icon;
-                                        return (
-                                            <div key={i} className="bg-white rounded-2xl p-4 flex items-center gap-3 border border-[#e4e4ef]">
-                                                <div className={`w-10 h-10 rounded-xl ${notif.bg} flex items-center justify-center shrink-0`}>
-                                                    <NotifIcon size={18} className={notif.color} />
-                                                </div>
-                                                <div>
-                                                    <p className="text-[14px] font-semibold text-[#1b1b1b]">{notif.title}</p>
-                                                    <p className="text-[12px] text-[#a19f9d]">{notif.sub}</p>
-                                                </div>
-                                            </div>
-                                        );
-                                    });
-                                })()}
-                            </div>
-                        </div>
-                        {/* Nav bar stays visible inside sheet */}
-                        <div className="px-4 pb-4 pt-2 shrink-0">
-                            <div className="bg-[#0f2744] rounded-[28px] flex items-center justify-around py-3.5 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
-                                <button onClick={() => { setActiveSheet(null); setActiveNav('home'); }} className="text-white/30 py-2 px-4"><Home size={23} /></button>
-                                <button onClick={() => { setActiveSheet('menu'); setActiveNav('menu'); }} className="text-white/30 py-2 px-4"><Menu size={23} /></button>
-                                <button onClick={() => { setActiveSheet(null); setIsAiOpen(true); }} className="relative -mt-7 -mb-5 flex items-center justify-center">
-                                    <div className="w-[90px] h-[90px]"><DotLottieReact src="/blob.lottie" loop autoplay style={{ width: 90, height: 90 }} /></div>
-                                </button>
-                                <button className="text-white py-2 px-4"><Bell size={23} /></button>
-                                <button onClick={() => setActiveNav('search')} className="text-white/30 py-2 px-4"><Search size={23} /></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* ── Menu Sheet ── */}
-            {activeSheet === 'menu' && (
-                <div className="fixed inset-0 z-50 flex flex-col justify-end">
-                    <div className="absolute inset-0 bg-black/30" onClick={() => { setActiveSheet(null); setActiveNav('home'); }} />
-                    <div className="relative w-full bg-[#f0f0f5] rounded-t-[32px] overflow-hidden shadow-[0_-10px_40px_rgba(0,0,0,0.1)] max-h-[75vh] flex flex-col">
-                        <div className="w-10 h-[5px] bg-black/10 rounded-full mx-auto mt-3 mb-1 shrink-0" />
-                        <div className="flex items-center justify-between px-5 py-3 shrink-0">
-                            <h3 className="text-[18px] font-bold text-[#1b1b1b]">Menu</h3>
-                            <button onClick={() => { setActiveSheet(null); setActiveNav('home'); }} className="w-8 h-8 rounded-full bg-black/[0.06] flex items-center justify-center">
-                                <X size={16} className="text-[#605e5c]" />
-                            </button>
-                        </div>
-                        <div className="flex-1 overflow-y-auto px-5 pb-8">
-                            <div className="space-y-2.5">
-                                {[
-                                    { icon: Home, label: 'My Property', sub: propertyLabel, color: 'text-blue-600', bg: 'bg-blue-50' },
-                                    { icon: Receipt, label: 'Payment History', sub: 'View all receipts', color: 'text-violet-500', bg: 'bg-violet-50' },
-                                    { icon: Wrench, label: 'Maintenance Requests', sub: 'Open tickets', color: 'text-orange-500', bg: 'bg-orange-50' },
-                                    { icon: Building2, label: 'Property Info', sub: company?.companyName || '—', color: 'text-teal-500', bg: 'bg-teal-50' },
-                                ].map((item) => {
-                                    const MenuItem = item.icon;
-                                    return (
-                                        <button key={item.label} className="w-full flex items-center gap-4 bg-white rounded-2xl px-4 py-3.5 border border-[#e4e4ef] active:bg-[#f8f8fc] transition-colors text-left">
-                                            <div className={`w-11 h-11 rounded-xl ${item.bg} flex items-center justify-center shrink-0`}>
-                                                <MenuItem size={20} className={item.color} />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-[14px] font-bold text-[#1b1b1b]">{item.label}</p>
-                                                <p className="text-[11px] text-[#a19f9d] truncate">{item.sub}</p>
-                                            </div>
-                                            <ChevronRight size={16} className="text-[#c8c6c4] shrink-0" />
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                        <div className="px-4 pb-4 pt-2 shrink-0">
-                            <div className="bg-[#0f2744] rounded-[28px] flex items-center justify-around py-3.5 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
-                                <button onClick={() => { setActiveSheet(null); setActiveNav('home'); }} className="text-white/30 py-2 px-4"><Home size={23} /></button>
-                                <button className="text-white py-2 px-4"><Menu size={23} /></button>
-                                <button onClick={() => { setActiveSheet(null); setIsAiOpen(true); }} className="relative -mt-7 -mb-5 flex items-center justify-center">
-                                    <div className="w-[90px] h-[90px]"><DotLottieReact src="/blob.lottie" loop autoplay style={{ width: 90, height: 90 }} /></div>
-                                </button>
-                                <button onClick={() => { setActiveSheet('notifications'); setActiveNav('notifications'); }} className="text-white/30 py-2 px-4"><Bell size={23} /></button>
-                                <button onClick={() => setActiveNav('search')} className="text-white/30 py-2 px-4"><Search size={23} /></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* ── AI Bottom Sheet ── */}
-            {isAiOpen && (
-                <div className="fixed inset-0 z-50 flex flex-col justify-end">
-                    <div className="absolute inset-0 bg-black/30" onClick={() => setIsAiOpen(false)} />
-                    <div className="relative w-full rounded-t-[32px] flex flex-col overflow-hidden shadow-[0_-10px_40px_rgba(0,0,0,0.08)] bg-[#f3f2f1]/95 backdrop-blur-2xl" style={{ height: '88vh' }}>
-                        <div className="w-10 h-[5px] bg-black/10 rounded-full mx-auto mt-3 mb-2 shrink-0" />
-                        <div className="flex justify-end px-5 shrink-0">
-                            <button onClick={() => setIsAiOpen(false)} className="w-8 h-8 rounded-full bg-black/[0.06] flex items-center justify-center">
-                                <X size={16} className="text-[#605e5c]" />
-                            </button>
-                        </div>
-                        <div className="flex flex-col items-center mt-2 px-6 shrink-0">
-                            <div className="relative w-[130px] h-[130px] flex items-center justify-center mb-6">
-                                <DotLottieReact src="/blob.lottie" loop autoplay style={{ width: 130, height: 130, position: 'absolute', inset: 0 }} />
-                                <div className="relative z-10 w-12 h-12 rounded-2xl bg-[#0A58CA]/15 backdrop-blur-sm flex items-center justify-center border border-[#0A58CA]/20">
-                                    <Bot size={24} className="text-[#0A58CA]" />
+                        {/* Giant Orb */}
+                        <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ type: 'spring', stiffness: 180, damping: 18, delay: 0.15 }}
+                            className="w-[240px] h-[240px] relative mb-12"
+                        >
+                            <div className="absolute inset-0 rounded-full bg-[#111111] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.2)]">
+                                <div className="absolute inset-0 scale-[2.2] flex items-center justify-center opacity-90 pointer-events-none mix-blend-screen">
+                                    <DotLottieReact src="/blob.lottie" loop autoplay />
                                 </div>
                             </div>
-                            <h1 className="text-[#1b1b1b] text-[22px] font-bold text-center leading-tight mb-1">{loading ? '' : `${firstName},`}</h1>
-                            <h2 className="text-[#605e5c] text-[18px] font-medium text-center leading-tight mb-6">What do you need help with?</h2>
-                        </div>
-                        <div className="px-6 mb-5 shrink-0">
-                            <div className="bg-white border border-[#e1dfdd] rounded-2xl px-5 py-4 shadow-sm">
-                                <input type="text" placeholder="Type your request..." className="w-full bg-transparent text-[#1b1b1b] text-[15px] outline-none placeholder-[#a19f9d]" />
-                            </div>
-                        </div>
-                        <div className="flex-1 px-6 overflow-y-auto pb-8">
-                            <div className="flex flex-col gap-2.5">
-                                {aiSuggestions.map((suggestion, i) => (
-                                    <button key={i} className="w-full text-left text-[14px] text-[#605e5c] py-3.5 px-5 rounded-2xl bg-white border border-[#e1dfdd] active:bg-[#f3f2f1] transition-colors">
-                                        {suggestion}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+                            {/* Pulse rings */}
+                            <div className="absolute inset-[-16px] rounded-full border-2 border-[#111111]/8 animate-ping" style={{ animationDuration: '3s' }} />
+                            <div className="absolute inset-[-32px] rounded-full border border-[#111111]/4 animate-ping" style={{ animationDuration: '4.5s' }} />
+                        </motion.div>
+
+                        {/* Caption */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.35, duration: 0.5 }}
+                            className="text-center px-10"
+                        >
+                            <h2 className="text-[32px] font-bold text-[#1b1b1b] tracking-tight leading-tight mb-3">
+                                Sama AI
+                            </h2>
+                            <p className="text-[16px] text-[#8a8886] font-medium leading-relaxed max-w-[300px] mx-auto">
+                                Your intelligent property assistant — always listening, always helping.
+                            </p>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </main>
     );
 }
