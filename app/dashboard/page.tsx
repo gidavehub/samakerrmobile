@@ -121,7 +121,7 @@ function ClientDashboardContent() {
     if (!token) return null;
 
     const tenantName = property?.tenantName || 'Tenant';
-    const firstName = tenantName.split(' ')[0];
+    const fullName = tenantName;
     const propertyLabel = property?.name || 'Your Property';
     const brandColor = company?.brandColor1 || '#0A58CA';
     const paymentModel = billing?.paymentModel || 'rent';
@@ -186,82 +186,84 @@ function ClientDashboardContent() {
             : { label: 'Planning', color: 'bg-white/15 text-white/70' };
 
     return (
-        <main className="min-h-[100dvh] bg-white flex flex-col font-inter relative overflow-hidden pb-24">
-            {/* Header Area — Sama Kerr Logo */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="px-6 pt-[env(safe-area-inset-top,44px)] pb-3 flex items-center justify-center z-10"
-            >
-                <img src="/logo-blue.png" alt="Sama Kerr" className="h-[64px] object-contain" />
-            </motion.div>
+        <main className="h-[100dvh] bg-white flex flex-col font-inter relative overflow-hidden">
+            <div className="flex-1 flex flex-col justify-center w-full max-w-[500px] mx-auto pb-8">
+                {/* Header Area — Sama Kerr Logo */}
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="px-6 pb-2 flex items-center justify-center z-10 shrink-0"
+                >
+                    <img src="/logo-blue.png" alt="Sama Kerr" className="h-[72px] object-contain" />
+                </motion.div>
 
-            {/* Greeting */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="px-8 mt-6 mb-[44px] z-10"
-            >
-                <h1 className="text-[44px] font-bold text-[#1b1b1b] leading-[1.05] tracking-[-0.04em]">
-                    Hi {loading ? '...' : firstName},<br />
-                    How can I help<br />
-                    you today?
-                </h1>
-            </motion.div>
+                {/* Greeting */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    className="px-8 mt-2 mb-6 z-10 shrink-0"
+                >
+                    <h1 className="text-[38px] font-bold text-[#1b1b1b] leading-[1.05] tracking-[-0.03em]">
+                        Hi {loading ? '...' : fullName},<br />
+                        How can I help<br />
+                        you today?
+                    </h1>
+                </motion.div>
 
-            {/* 4 Grid Squircle Buttons */}
-            <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                animate="show"
-                className="px-6 grid grid-cols-2 gap-4 mb-8 z-10"
-            >
-                {/* 1. My Property / Light Blue */}
-                <motion.button variants={slideUpItem} onClick={() => router.push('/property')} className="bg-[#E4F4F9] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 active:scale-[0.98] transition-transform">
-                    <Building2 size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
-                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">My Property</span>
-                </motion.button>
+                {/* 4 Grid Squircle Buttons */}
+                <motion.div
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="show"
+                    className="px-6 grid grid-cols-2 gap-3 mb-6 z-10 shrink-0"
+                >
+                    {/* 1. My Property / Light Blue */}
+                    <motion.button variants={slideUpItem} onClick={() => router.push('/property')} className="bg-[#E4F4F9] rounded-[28px] aspect-[1.3] flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                        <Building2 size={26} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                        <span className="text-[15px] font-semibold text-[#1b1b1b] tracking-tight">My Property</span>
+                    </motion.button>
 
-                {/* 2. Payments / White + Border */}
-                <motion.button variants={slideUpItem} onClick={() => router.push('/payments')} className="bg-white border border-[#E5E5E5] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 shadow-sm active:scale-[0.98] transition-transform">
-                    <CreditCard size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
-                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">Payments</span>
-                </motion.button>
+                    {/* 2. Payments / White + Border */}
+                    <motion.button variants={slideUpItem} onClick={() => router.push('/payments')} className="bg-white border border-[#E5E5E5] rounded-[28px] aspect-[1.3] flex flex-col items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-transform">
+                        <CreditCard size={26} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                        <span className="text-[15px] font-semibold text-[#1b1b1b] tracking-tight">Payments</span>
+                    </motion.button>
 
-                {/* 3. Maintenance / Light Green */}
-                <motion.button variants={slideUpItem} onClick={() => router.push('/maintenance')} className="bg-[#E6F5DF] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 active:scale-[0.98] transition-transform">
-                    <Wrench size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
-                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">Maintenance</span>
-                </motion.button>
+                    {/* 3. Maintenance / Light Green */}
+                    <motion.button variants={slideUpItem} onClick={() => router.push('/maintenance')} className="bg-[#E6F5DF] rounded-[28px] aspect-[1.3] flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                        <Wrench size={26} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                        <span className="text-[15px] font-semibold text-[#1b1b1b] tracking-tight">Maintenance</span>
+                    </motion.button>
 
-                {/* 4. Support / Light Yellow */}
-                <motion.button variants={slideUpItem} onClick={() => router.push('/support')} className="bg-[#FFF6D4] rounded-[36px] aspect-[1.1] flex flex-col items-center justify-center gap-3.5 active:scale-[0.98] transition-transform">
-                    <Headphones size={30} strokeWidth={1.5} className="text-[#1b1b1b]" />
-                    <span className="text-[17px] font-semibold text-[#1b1b1b] tracking-tight">Support</span>
-                </motion.button>
-            </motion.div>
+                    {/* 4. Support / Light Yellow */}
+                    <motion.button variants={slideUpItem} onClick={() => router.push('/support')} className="bg-[#FFF6D4] rounded-[28px] aspect-[1.3] flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                        <Headphones size={26} strokeWidth={1.5} className="text-[#1b1b1b]" />
+                        <span className="text-[15px] font-semibold text-[#1b1b1b] tracking-tight">Support</span>
+                    </motion.button>
+                </motion.div>
 
-            {/* Search Bar */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="px-6 flex-1 z-10"
-            >
-                <div className="bg-white border border-[#E5E5E5] rounded-[100px] flex items-center px-5 py-[18px] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
-                    <Search size={20} strokeWidth={2.5} className="text-[#a19f9d] shrink-0" />
-                    <input
-                        type="text"
-                        placeholder="Ask or search for anything"
-                        className="flex-1 bg-transparent border-none outline-none px-3 text-[16px] font-medium text-[#1b1b1b] placeholder-[#b1afad]"
-                    />
-                    <button className="w-8 h-8 rounded-full flex items-center justify-center shrink-0">
-                        <Mic size={20} strokeWidth={2} className="text-[#1b1b1b]" />
-                    </button>
-                </div>
-            </motion.div>
+                {/* Search Bar */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    className="px-6 z-10 shrink-0"
+                >
+                    <div className="bg-white border border-[#E5E5E5] rounded-[100px] flex items-center px-5 py-[18px] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+                        <Search size={20} strokeWidth={2.5} className="text-[#a19f9d] shrink-0" />
+                        <input
+                            type="text"
+                            placeholder="Ask or search for anything"
+                            className="flex-1 bg-transparent border-none outline-none px-3 text-[16px] font-medium text-[#1b1b1b] placeholder-[#b1afad]"
+                        />
+                        <button className="w-8 h-8 rounded-full flex items-center justify-center shrink-0">
+                            <Mic size={20} strokeWidth={2} className="text-[#1b1b1b]" />
+                        </button>
+                    </div>
+                </motion.div>
+            </div>
 
             {/* Split Bottom Nav */}
             <motion.div

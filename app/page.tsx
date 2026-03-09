@@ -112,36 +112,37 @@ export default function MobileHome() {
         <source src="/hero.mp4" type="video/mp4" />
       </video>
 
-      {/* Content */}
-      <div className="w-full max-w-[400px] flex flex-col items-center gap-8 relative z-10">
-        <div className="relative w-[160px] h-[44px] mb-5 animate-in">
+      <div className="w-full max-w-[400px] flex flex-col items-center gap-6 relative z-10 px-4">
+        <div className="relative w-[240px] h-[80px] mb-4 animate-in">
           <Image src="/logo-blue.png" alt="Sama Kerr" fill className="object-contain" priority />
         </div>
 
         {isStandalone ? (
-          <div className="bg-primary-bg w-full rounded-3xl p-10 flex flex-col items-center text-center shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-border-subtle animate-in">
-            <div className="w-16 h-16 rounded-full bg-accent-blue/10 flex items-center justify-center mb-6">
-              <ScanBarcode size={32} color="var(--accent-blue)" />
+          <div className="bg-black/40 backdrop-blur-xl w-full p-8 flex flex-col items-center text-center border-t border-l border-white/20 shadow-2xl animate-in relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-[#0067b8]" />
+            <div className="w-14 h-14 bg-white/10 flex items-center justify-center mb-6">
+              <ScanBarcode size={28} className="text-white" strokeWidth={1.5} />
             </div>
-            <h1 className="text-2xl font-semibold mb-3 text-primary-text">Welcome Home</h1>
-            <p className="text-[15px] text-secondary-text leading-relaxed mb-8">
+            <h1 className="text-[24px] font-semibold mb-3 text-white tracking-tight">Welcome Home</h1>
+            <p className="text-[14px] text-white/80 leading-relaxed mb-8">
               Ready to take control of your property? Scan the unique QR code provided by your property manager to instantly connect your home.
             </p>
-            <button onClick={startScanner} className="w-full bg-accent-blue hover:bg-accent-hover text-white py-3 px-6 rounded-full font-semibold transition-transform hover:-translate-y-px flex justify-center items-center">
+            <button onClick={startScanner} className="w-full bg-[#0067b8] hover:bg-[#005ba1] text-white py-3.5 px-6 font-semibold transition-colors flex justify-center items-center shadow-md active:scale-[0.98]">
               Scan Property QR
             </button>
-            <p className="text-[13px] text-secondary-text opacity-80 mt-4">Make sure your camera is clean and well-lit.</p>
+            <p className="text-[12px] text-white/60 mt-4">Make sure your camera is clean and well-lit.</p>
           </div>
         ) : (
-          <div className="bg-primary-bg w-full rounded-3xl p-10 flex flex-col items-center text-center shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-border-subtle animate-in">
-            <div className="w-16 h-16 rounded-full bg-accent-blue/10 flex items-center justify-center mb-6">
-              <Download size={32} color="var(--accent-blue)" />
+          <div className="bg-black/40 backdrop-blur-xl w-full p-8 flex flex-col items-center text-center border-t border-l border-white/20 shadow-2xl animate-in relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-[#0067b8]" />
+            <div className="w-14 h-14 bg-white/10 flex items-center justify-center mb-6">
+              <Download size={28} className="text-white" strokeWidth={1.5} />
             </div>
-            <h1 className="text-2xl font-semibold mb-3 text-primary-text">Install the App</h1>
-            <p className="text-[15px] text-secondary-text leading-relaxed mb-8">
+            <h1 className="text-[24px] font-semibold mb-3 text-white tracking-tight">Install the App</h1>
+            <p className="text-[14px] text-white/80 leading-relaxed mb-8">
               Sama Kerr is designed to be installed as an app on your phone for full functionality, offline support, and a better experience.
             </p>
-            <button onClick={handleInstallClick} className="w-full bg-accent-blue hover:bg-accent-hover text-white py-3 px-6 rounded-full font-semibold transition-transform hover:-translate-y-px flex justify-center items-center">
+            <button onClick={handleInstallClick} className="w-full bg-[#0067b8] hover:bg-[#005ba1] text-white py-3.5 px-6 font-semibold transition-colors flex justify-center items-center shadow-md active:scale-[0.98]">
               Install Sama Kerr
             </button>
           </div>

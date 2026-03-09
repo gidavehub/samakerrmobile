@@ -148,7 +148,7 @@ export default function PropertyPage() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="px-5 pt-[env(safe-area-inset-top,40px)] pb-4 flex items-center gap-3 z-10"
+                className="bg-white px-5 pt-[calc(env(safe-area-inset-top,44px)+16px)] pb-3 flex items-center gap-3 sticky top-0 z-20 shadow-sm"
             >
                 <button onClick={() => router.back()} className="w-12 h-12 rounded-full bg-[#efefef] flex items-center justify-center active:bg-[#e4e4e4] transition-colors">
                     <ChevronLeft size={24} strokeWidth={2} className="text-[#1b1b1b]" />
@@ -215,6 +215,55 @@ export default function PropertyPage() {
                 <motion.div variants={slideUp}>
                     <h3 className="text-[17px] font-bold text-[#1b1b1b] mb-3 px-1">Construction Progress</h3>
                     <div className="bg-white border border-[#E5E5E5] rounded-[28px] p-5 shadow-sm">
+                        {/* SVG Building Animation */}
+                        <div className="w-full max-w-[240px] mx-auto mb-5">
+                            <svg viewBox="0 0 200 160" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                {/* Ground */}
+                                <rect x="0" y="140" width="200" height="20" fill="#f3f2f1" rx="2" />
+                                <rect x="10" y="148" width="180" height="2" fill="#e1dfdd" rx="1" />
+                                {/* Building outline */}
+                                <rect x="55" y="20" width="90" height="120" fill="none" stroke="#e1dfdd" strokeWidth="2" strokeDasharray="4 4" rx="2" />
+                                {/* Floors */}
+                                {[0, 1, 2, 3, 4].map(i => {
+                                    const floorY = 116 - i * 24;
+                                    const filledFloors = Math.round((progressPercent / 100) * 5);
+                                    const isFilled = i < filledFloors;
+                                    return (
+                                        <g key={i}>
+                                            <rect x="57" y={floorY} width="86" height="22" fill={isFilled ? '#0A58CA' : 'transparent'} opacity={isFilled ? (1 - i * 0.12) : 0} rx="1">
+                                                {isFilled && <animate attributeName="opacity" from="0" to={1 - i * 0.12} dur="0.6s" begin={`${i * 0.15}s`} fill="freeze" />}
+                                            </rect>
+                                            {isFilled && [0, 1, 2].map(w => (
+                                                <rect key={w} x={66 + w * 28} y={floorY + 5} width="18" height="12" fill="white" opacity="0.4" rx="1" />
+                                            ))}
+                                        </g>
+                                    );
+                                })}
+                                {/* Crane */}
+                                {progressPercent < 100 && progressPercent > 10 && (
+                                    <g opacity="0.7">
+                                        <rect x="155" y="10" width="4" height="130" fill="#d48806" rx="1" />
+                                        <rect x="90" y="10" width="80" height="4" fill="#d48806" rx="1" />
+                                        <line x1="110" y1="14" x2="110" y2={40 + (100 - progressPercent) * 0.6} stroke="#d48806" strokeWidth="1.5" strokeDasharray="3 2">
+                                            <animate attributeName="y2" values={`${40 + (100 - progressPercent) * 0.6};${35 + (100 - progressPercent) * 0.6};${40 + (100 - progressPercent) * 0.6}`} dur="2s" repeatCount="indefinite" />
+                                        </line>
+                                        <rect x="106" y={36 + (100 - progressPercent) * 0.6} width="8" height="6" fill="#d48806" rx="1">
+                                            <animate attributeName="y" values={`${36 + (100 - progressPercent) * 0.6};${31 + (100 - progressPercent) * 0.6};${36 + (100 - progressPercent) * 0.6}`} dur="2s" repeatCount="indefinite" />
+                                        </rect>
+                                    </g>
+                                )}
+                                {/* Checkmark */}
+                                {progressPercent >= 100 && (
+                                    <g>
+                                        <circle cx="100" cy="80" r="20" fill="#34C759" opacity="0.9">
+                                            <animate attributeName="r" from="0" to="20" dur="0.4s" fill="freeze" />
+                                        </circle>
+                                        <polyline points="90,80 97,88 112,72" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                                    </g>
+                                )}
+                                <text x="100" y="156" textAnchor="middle" fill="#605e5c" fontSize="11" fontWeight="600" fontFamily="Inter, sans-serif">{Math.round(progressPercent)}% Complete</text>
+                            </svg>
+                        </div>
                         {/* Progress Bar */}
                         <div className="relative h-2 bg-[#efefef] rounded-full mb-5 overflow-hidden">
                             <motion.div

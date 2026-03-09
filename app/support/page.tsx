@@ -133,7 +133,7 @@ export default function SupportPage() {
         <main className="min-h-[100dvh] bg-white flex flex-col font-inter pb-8">
             {/* Header */}
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="px-5 pt-[env(safe-area-inset-top,40px)] pb-4 flex items-center gap-3 z-10">
+                className="px-5 pt-[calc(env(safe-area-inset-top,40px)+16px)] pb-3 flex items-center gap-3 z-10">
                 <button onClick={() => view === 'main' ? router.back() : setView('main')}
                     className="w-12 h-12 rounded-full bg-[#efefef] flex items-center justify-center active:bg-[#e4e4e4] transition-colors">
                     <ChevronLeft size={24} strokeWidth={2} className="text-[#1b1b1b]" />

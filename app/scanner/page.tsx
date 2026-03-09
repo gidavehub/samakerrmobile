@@ -74,12 +74,8 @@ export default function ScannerPage() {
                 html5QrCodeRef.current = null;
             }
 
-            // @ts-ignore
-            const { Html5QrcodeSupportedFormats } = await import('html5-qrcode');
-
             const html5QrCode = new Html5Qrcode("reader", {
-                verbose: false,
-                formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
+                verbose: false
             });
             html5QrCodeRef.current = html5QrCode;
 
@@ -253,7 +249,7 @@ export default function ScannerPage() {
                     </div>
 
                     {/* Bottom Controls */}
-                    <div className="w-full flex flex-col items-center gap-4 pb-[env(safe-area-inset-bottom,32px)] pt-8 pointer-events-auto z-[15] bg-gradient-to-t from-black/70 to-transparent animate-fade-slide-up-delay">
+                    <div className="w-full flex flex-col items-center gap-4 pb-[calc(env(safe-area-inset-bottom,32px)+32px)] pt-8 pointer-events-auto z-[15] bg-gradient-to-t from-black/70 to-transparent animate-fade-slide-up-delay">
                         {/* Action Row */}
                         <div className="flex items-center gap-5">
                             {/* Torch */}
