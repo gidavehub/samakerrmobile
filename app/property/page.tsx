@@ -6,8 +6,8 @@ import {
     ChevronLeft, Building2, MapPin, Share2, Navigation, ExternalLink,
     HardHat, CheckCircle2, Clock, Image as ImageIcon, Cuboid, Copy, Check
 } from 'lucide-react';
-import { database } from '@/lib/firebase';
-import { ref, get } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { motion, Variants } from 'framer-motion';
 
 const staggerContainer: Variants = {
@@ -59,23 +59,18 @@ export default function PropertyPage() {
         if (!token) { router.replace('/'); return; }
         setLoading(true);
         try {
-            const companiesSnap = await get(ref(database, 'companies'));
-            if (companiesSnap.exists()) {
-                const companies = companiesSnap.val();
-                for (const [compId, compData] of Object.entries(companies) as [string, any][]) {
-                    const propSnap = await get(ref(database, `properties/${compId}/${token}`));
-                    if (propSnap.exists()) {
-                        setProperty(propSnap.val());
-                        setCompany(compData);
-                        const billSnap = await get(ref(database, `billing/${compId}/${token}`));
-                        if (billSnap.exists()) setBilling(billSnap.val());
-                        setLoading(false);
-                        return;
-                    }
+            const propSnap = await getDoc(doc(db, 'properties', token));
+            if (propSnap.exists()) {
+                const propData = propSnap.data();
+                setProperty(propData as PropertyData);
+                if (propData.companyId) {
+                    const compSnap = await getDoc(doc(db, 'companies', propData.companyId));
+                    if (compSnap.exists()) setCompany(compSnap.data() as CompanyData);
+                    const billingQ = query(collection(db, 'billing'), where('companyId', '==', propData.companyId), where('propertyId', '==', token));
+                    const billSnap = await getDocs(billingQ);
+                    if (!billSnap.empty) setBilling(billSnap.docs[0].data() as BillingData);
                 }
             }
-            const legacySnap = await get(ref(database, `homes/${token}`));
-            if (legacySnap.exists()) setProperty(legacySnap.val());
         } catch (err) {
             console.error('Failed to fetch property:', err);
         } finally {

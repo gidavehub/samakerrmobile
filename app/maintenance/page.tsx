@@ -7,8 +7,8 @@ import {
     Flame, ShowerHead, Lock, Lightbulb, Wrench, Camera, X,
     ChevronRight, CheckCircle2, AlertTriangle, Send, Plus, Trash2
 } from 'lucide-react';
-import { database } from '@/lib/firebase';
-import { ref, get, push, set } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, addDoc, collection } from 'firebase/firestore';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 const slideUp: Variants = {
@@ -85,13 +85,10 @@ export default function MaintenancePage() {
         // Find company ID
         (async () => {
             try {
-                const companiesSnap = await get(ref(database, 'companies'));
-                if (companiesSnap.exists()) {
-                    const companies = companiesSnap.val();
-                    for (const [compId] of Object.entries(companies) as [string, any][]) {
-                        const propSnap = await get(ref(database, `properties/${compId}/${saved}`));
-                        if (propSnap.exists()) { setCompanyId(compId); return; }
-                    }
+                const propSnap = await getDoc(doc(db, 'properties', saved));
+                if (propSnap.exists()) {
+                    const propData = propSnap.data();
+                    if (propData.companyId) setCompanyId(propData.companyId);
                 }
             } catch { /* ignore */ }
         })();
@@ -127,8 +124,9 @@ export default function MaintenancePage() {
         if (!token || !companyId || !selectedCategory) return;
         setSubmitting(true);
         try {
-            const reportRef = push(ref(database, `maintenance/${companyId}/${token}`));
-            await set(reportRef, {
+            await addDoc(collection(db, 'maintenance'), {
+                companyId,
+                propertyId: token,
                 category: selectedCategory,
                 subIssues: selectedSubIssues,
                 urgency,

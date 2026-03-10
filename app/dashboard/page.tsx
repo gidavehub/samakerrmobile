@@ -10,8 +10,8 @@ import {
     MessageCircleQuestion, ScanLine, FileEdit, RefreshCw, Sparkles, Mic, Layers, User, Headphones
 } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { database } from '@/lib/firebase';
-import { ref, get } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 // Animation variants
@@ -85,23 +85,21 @@ function ClientDashboardContent() {
     const fetchData = useCallback(async (id: string) => {
         setLoading(true);
         try {
-            const companiesSnap = await get(ref(database, 'companies'));
-            if (companiesSnap.exists()) {
-                const companies = companiesSnap.val();
-                for (const [compId, compData] of Object.entries(companies) as [string, any][]) {
-                    const propSnap = await get(ref(database, `properties/${compId}/${id}`));
-                    if (propSnap.exists()) {
-                        setProperty(propSnap.val());
-                        setCompany(compData);
-                        const billSnap = await get(ref(database, `billing/${compId}/${id}`));
-                        if (billSnap.exists()) setBilling(billSnap.val());
-                        setLoading(false);
-                        return;
-                    }
+            // Property is a flat doc in 'properties' collection with id = token
+            const propSnap = await getDoc(doc(db, 'properties', id));
+            if (propSnap.exists()) {
+                const propData = propSnap.data();
+                setProperty(propData as PropertyData);
+                // Fetch company data
+                if (propData.companyId) {
+                    const compSnap = await getDoc(doc(db, 'companies', propData.companyId));
+                    if (compSnap.exists()) setCompany(compSnap.data() as CompanyData);
+                    // Fetch billing
+                    const billingQ = query(collection(db, 'billing'), where('companyId', '==', propData.companyId), where('propertyId', '==', id));
+                    const billSnap = await getDocs(billingQ);
+                    if (!billSnap.empty) setBilling(billSnap.docs[0].data() as BillingData);
                 }
             }
-            const legacySnap = await get(ref(database, `homes/${id}`));
-            if (legacySnap.exists()) setProperty(legacySnap.val());
         } catch (err) {
             console.error('Failed to fetch property:', err);
         } finally {

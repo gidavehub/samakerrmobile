@@ -7,8 +7,8 @@ import {
     ChevronRight, Send, ExternalLink, Shield, BookOpen, Clock,
     CheckCircle2, AlertCircle
 } from 'lucide-react';
-import { database } from '@/lib/firebase';
-import { ref, get, push, set } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, addDoc, collection } from 'firebase/firestore';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 const staggerContainer: Variants = {
@@ -61,16 +61,13 @@ export default function SupportPage() {
 
         (async () => {
             try {
-                const companiesSnap = await get(ref(database, 'companies'));
-                if (companiesSnap.exists()) {
-                    const companies = companiesSnap.val();
-                    for (const [compId, compData] of Object.entries(companies) as [string, any][]) {
-                        const propSnap = await get(ref(database, `properties/${compId}/${saved}`));
-                        if (propSnap.exists()) {
-                            setCompanyId(compId);
-                            setCompanyName(compData.companyName || 'Property Manager');
-                            return;
-                        }
+                const propSnap = await getDoc(doc(db, 'properties', saved));
+                if (propSnap.exists()) {
+                    const propData = propSnap.data();
+                    if (propData.companyId) {
+                        setCompanyId(propData.companyId);
+                        const compSnap = await getDoc(doc(db, 'companies', propData.companyId));
+                        if (compSnap.exists()) setCompanyName(compSnap.data().companyName || 'Property Manager');
                     }
                 }
             } catch { /* ignore */ }
@@ -81,8 +78,9 @@ export default function SupportPage() {
         if (!token || !companyId || !selectedTopic || !reportMessage.trim()) return;
         setSubmitting(true);
         try {
-            const reportRef = push(ref(database, `support/${companyId}/${token}`));
-            await set(reportRef, {
+            await addDoc(collection(db, 'support'), {
+                companyId,
+                propertyId: token,
                 topic: selectedTopic,
                 message: reportMessage.trim(),
                 status: 'open',

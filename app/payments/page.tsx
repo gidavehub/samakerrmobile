@@ -6,8 +6,8 @@ import {
     ChevronLeft, Zap, Droplets, Flame, Wrench, Receipt,
     ChevronRight, CreditCard, ArrowUpRight, Home
 } from 'lucide-react';
-import { database } from '@/lib/firebase';
-import { ref, get } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { motion, Variants } from 'framer-motion';
 
 const staggerContainer: Variants = {
@@ -50,18 +50,14 @@ export default function PaymentsPage() {
         if (!token) { router.replace('/'); return; }
         setLoading(true);
         try {
-            const companiesSnap = await get(ref(database, 'companies'));
-            if (companiesSnap.exists()) {
-                const companies = companiesSnap.val();
-                for (const [compId, compData] of Object.entries(companies) as [string, any][]) {
-                    const propSnap = await get(ref(database, `properties/${compId}/${token}`));
-                    if (propSnap.exists()) {
-                        setProperty(propSnap.val());
-                        const billSnap = await get(ref(database, `billing/${compId}/${token}`));
-                        if (billSnap.exists()) setBilling(billSnap.val());
-                        setLoading(false);
-                        return;
-                    }
+            const propSnap = await getDoc(doc(db, 'properties', token));
+            if (propSnap.exists()) {
+                const propData = propSnap.data();
+                setProperty(propData as PropertyData);
+                if (propData.companyId) {
+                    const billingQ = query(collection(db, 'billing'), where('companyId', '==', propData.companyId), where('propertyId', '==', token));
+                    const billSnap = await getDocs(billingQ);
+                    if (!billSnap.empty) setBilling(billSnap.docs[0].data() as BillingData);
                 }
             }
         } catch (err) {
