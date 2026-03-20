@@ -49,12 +49,42 @@ export default function ScannerPage() {
         localStorage.removeItem('samakerr_scan_history');
     };
 
-    const handleValidScan = useCallback((token: string) => {
+    const handleValidScan = useCallback(async (token: string) => {
         // Haptic feedback
         if (navigator.vibrate) navigator.vibrate(100);
         setScanResult(token);
         saveScanToHistory(token);
-        router.push(`/dashboard?token=${token}`);
+
+        // Safely teardown the scanner to prevent AbortError when the video element is unmounted
+        if (html5QrCodeRef.current) {
+            try {
+                const state = html5QrCodeRef.current.getState();
+                if (state === 2) { // 2 means running
+                    await html5QrCodeRef.current.stop();
+                }
+                html5QrCodeRef.current.clear();
+            } catch (e) {
+                // Ignore teardown errors
+            }
+        }
+
+        // Intercept agent/capture QR codes
+        if (token.includes('/capture?id=')) {
+            try {
+                const url = new URL(token.startsWith('http') ? token : `https://${token}`);
+                const id = url.searchParams.get('id');
+                const imagesPerRoom = url.searchParams.get('imagesPerRoom') || '3';
+                const videoLength = url.searchParams.get('videoLength') || '30';
+                router.push(`/capture?id=${id}&imagesPerRoom=${imagesPerRoom}&videoLength=${videoLength}`);
+            } catch (err) {
+                router.push(`/capture?id=demo&imagesPerRoom=3&videoLength=30`);
+            }
+        } else if (token.includes('samakerr-agent:')) {
+            const id = token.split(':').pop();
+            router.push(`/capture?id=${id}&imagesPerRoom=3&videoLength=30`);
+        } else {
+            router.push(`/dashboard?token=${token}`);
+        }
     }, [router, scanHistory]);
 
     const startScanner = useCallback(async () => {

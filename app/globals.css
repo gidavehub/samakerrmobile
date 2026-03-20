@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  /* Light Theme — Sama Kerr Mobile */
+  /* Light Theme — Sama Kerr Mobile (Fluent Design) */
   --bg-primary: #ffffff;
-  --bg-secondary: #f4f5f7;
-  --text-primary: #121212;
-  --text-secondary: #4a4a4a;
-  --accent-blue: #0A58CA;
-  --accent-hover: #084298;
-  --border-color: rgba(0, 0, 0, 0.08);
+  --bg-secondary: #f3f3f3;
+  --text-primary: #242424;
+  --text-secondary: #5c5c5c;
+  --accent-blue: #0067c0;
+  --accent-hover: #005ba1;
+  --border-color: rgba(0, 0, 0, 0.05);
 }
 
 @layer base {
@@ -31,7 +31,27 @@
   h5,
   h6 {
     font-family: theme('fontFamily.outfit');
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
+}
+
+/* Fluent Utilities */
+.acrylic {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(125%);
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.acrylic-dark {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px) saturate(125%);
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mica {
+  background-color: rgba(243, 243, 243, 0.8);
+  backdrop-filter: blur(100px);
 }
