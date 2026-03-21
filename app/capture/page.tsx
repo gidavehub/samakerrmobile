@@ -28,7 +28,7 @@ function CaptureFlowContent() {
     const searchParams = useSearchParams();
 
     const propertyId = searchParams.get('id') || 'demo';
-    const imagesPerRoom = parseInt(searchParams.get('imagesPerRoom') || '3');
+    const imagesPerRoom = parseInt(searchParams.get('imagesPerRoom') || '1');
 
     // States
     const [step, setStep] = useState<'loading' | 'error' | 'intro' | 'interactive_plan' | 'camera' | 'uploading' | 'processing' | 'success'>('loading');

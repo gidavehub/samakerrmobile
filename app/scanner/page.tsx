@@ -73,15 +73,15 @@ export default function ScannerPage() {
             try {
                 const url = new URL(token.startsWith('http') ? token : `https://${token}`);
                 const id = url.searchParams.get('id');
-                const imagesPerRoom = url.searchParams.get('imagesPerRoom') || '3';
+                const imagesPerRoom = url.searchParams.get('imagesPerRoom') || '1';
                 const videoLength = url.searchParams.get('videoLength') || '30';
                 router.push(`/capture?id=${id}&imagesPerRoom=${imagesPerRoom}&videoLength=${videoLength}`);
             } catch (err) {
-                router.push(`/capture?id=demo&imagesPerRoom=3&videoLength=30`);
+                router.push(`/capture?id=demo&imagesPerRoom=1&videoLength=30`);
             }
         } else if (token.includes('samakerr-agent:')) {
             const id = token.split(':').pop();
-            router.push(`/capture?id=${id}&imagesPerRoom=3&videoLength=30`);
+            router.push(`/capture?id=${id}&imagesPerRoom=1&videoLength=30`);
         } else {
             router.push(`/dashboard?token=${token}`);
         }

@@ -55,6 +55,32 @@ const roomSchema = {
           height: { type: SchemaType.NUMBER, description: "Height of the room (0-100 percentage)." },
         },
         required: ["x", "y", "width", "height"]
+      },
+      doors: {
+        type: SchemaType.ARRAY,
+        description: "Doors detected on the walls of this room in the blueprint.",
+        items: {
+          type: SchemaType.OBJECT,
+          properties: {
+            wall: { type: SchemaType.STRING, description: "north, south, east, or west" },
+            position: { type: SchemaType.NUMBER, description: "0.0 to 1.0 along the wall" },
+            type: { type: SchemaType.STRING, description: "single, double, or sliding" }
+          },
+          required: ["wall", "position"]
+        }
+      },
+      windows: {
+        type: SchemaType.ARRAY,
+        description: "Windows detected on the walls of this room in the blueprint.",
+        items: {
+          type: SchemaType.OBJECT,
+          properties: {
+            wall: { type: SchemaType.STRING, description: "north, south, east, or west" },
+            position: { type: SchemaType.NUMBER, description: "0.0 to 1.0 along the wall" },
+            width: { type: SchemaType.NUMBER, description: "Approximate width in meters" }
+          },
+          required: ["wall", "position"]
+        }
       }
     },
     required: ["id", "name", "boundingBox"]
@@ -78,7 +104,7 @@ export async function POST(req: Request) {
     
     // Force the exact 3.0 Flash preview version string on Vertex
     const generativeModel = vertexAI.getGenerativeModel({
-        model: 'gemini-3-flash-preview', 
+        model: 'gemini-3.1-pro-preview', 
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: roomSchema,
